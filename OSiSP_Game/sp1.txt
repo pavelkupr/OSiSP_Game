@@ -1,0 +1,6 @@
+CountOfSprites: 1
+Code: B
+SpaceX: 1
+SpaceY: 1
+Path length: 7
+Path: Grn.bmp
