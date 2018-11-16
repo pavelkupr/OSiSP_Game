@@ -1,5 +1,4 @@
 #pragma once
-//#include <windows.h>
 #include <atlstr.h>
 
 struct SpriteInfo
@@ -23,14 +22,12 @@ public:
 	Map();
 	void LoadMap(const char* path);
 	MapInfo GetMapInfo();
-	
+	void DeleteMapInfo(MapInfo mapInfo);
 	~Map();
+
 private:
-	int i, j, spritesCount;
-	char** codedMap;
-	SpriteInfo* spritesInfo;
-	char* pathToBackground;
-	void LoadSprites(char* path);
-	char** CreateCopyOfCodedMap();
+	MapInfo mapInfo;
+	int LoadSprites(char* path, SpriteInfo** spritesInfo);
+	char** CreateCopyOfCodedMap(MapInfo mapInfo);
 };
 

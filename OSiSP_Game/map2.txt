@@ -1,0 +1,8 @@
+i: 2
+j: 2
+BB
+BL
+Path length: 7
+Path to sprites: sp1.txt
+Path length to background: 8
+Path to background: back.bmp

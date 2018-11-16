@@ -1,41 +1,4 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(391,5): warning MSB8028: промежуточный каталог (Debug\) содержит файлы, которые используются совместно с другим проектом (OSiSP1.vcxproj).  Это может привести к ошибкам очистки и перестроения.
-  Drawer.cpp
-d:\github\osisp_game\osisp_game\drawer.cpp(117): warning C4101: i: неиспользованная локальная переменная
   main.cpp
-d:\github\osisp_game\osisp_game\main.cpp(21): warning C4101: hMenu: неиспользованная локальная переменная
-d:\github\osisp_game\osisp_game\main.cpp(77): warning C4101: hDC: неиспользованная локальная переменная
-  Map.cpp
-d:\github\osisp_game\osisp_game\map.cpp(15): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(208): note:  см. объявление "fopen"
-d:\github\osisp_game\osisp_game\map.cpp(16): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(1197): note:  см. объявление "fscanf"
-d:\github\osisp_game\osisp_game\map.cpp(17): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(1197): note:  см. объявление "fscanf"
-d:\github\osisp_game\osisp_game\map.cpp(24): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(1197): note:  см. объявление "fscanf"
-d:\github\osisp_game\osisp_game\map.cpp(26): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(1197): note:  см. объявление "fscanf"
-d:\github\osisp_game\osisp_game\map.cpp(28): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(1197): note:  см. объявление "fscanf"
-d:\github\osisp_game\osisp_game\map.cpp(30): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(1197): note:  см. объявление "fscanf"
-d:\github\osisp_game\osisp_game\map.cpp(31): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(1197): note:  см. объявление "fscanf"
-d:\github\osisp_game\osisp_game\map.cpp(33): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(1197): note:  см. объявление "fscanf"
-d:\github\osisp_game\osisp_game\map.cpp(70): warning C4996: 'fopen': This function or variable may be unsafe. Consider using fopen_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(208): note:  см. объявление "fopen"
-d:\github\osisp_game\osisp_game\map.cpp(71): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(1197): note:  см. объявление "fscanf"
-d:\github\osisp_game\osisp_game\map.cpp(76): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(1197): note:  см. объявление "fscanf"
-d:\github\osisp_game\osisp_game\map.cpp(77): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(1197): note:  см. объявление "fscanf"
-d:\github\osisp_game\osisp_game\map.cpp(78): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(1197): note:  см. объявление "fscanf"
-d:\github\osisp_game\osisp_game\map.cpp(79): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(1197): note:  см. объявление "fscanf"
-d:\github\osisp_game\osisp_game\map.cpp(81): warning C4996: 'fscanf': This function or variable may be unsafe. Consider using fscanf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-  c:\program files (x86)\windows kits\10\include\10.0.17134.0\ucrt\stdio.h(1197): note:  см. объявление "fscanf"
-  Создание кода...
+d:\github\osisp_game\osisp_game\main.cpp(25): warning C4101: hMenu: неиспользованная локальная переменная
   OSiSP1.vcxproj -> D:\GitHub\OSiSP_Game\OSiSP_Game\Debug\OSiSP2.exe
