@@ -1,18 +1,22 @@
 ﻿#include <windows.h>
 #include "Map.h"
 #include "Drawer.h"
+#include "Player.h"
+#include "IDynamicObject.h"
+#include "Environment.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 ATOM RegMyWindowClass(HINSTANCE, LPCTSTR);
 
-int height = 600, width = 1000;
+int height = 450, width = 750;//450 750 600 1000;
 int i = 50, j = 50;
+bool isRunning = true;
+const int ticksInMs = 1800, frameLim = 30;
 
 Drawer* drawer = NULL;
 PAINTSTRUCT ps;
 HANDLE hbitmap;
 MapInfo mapInfo;
-
 int APIENTRY WinMain(HINSTANCE hInstance,
 	HINSTANCE         hPrevInstance,
 	LPSTR             lpCmdLine,
@@ -23,10 +27,14 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 	HWND hWnd;
 	Map* map;
 	HMENU hMenu;
+	Player* player;
+	Environment* environment;
+	Controls controls;
+	LARGE_INTEGER time, currTime;
 	LPCTSTR lpzClass = TEXT("MyClass");
-
+	
 	if (!RegMyWindowClass(hInstance, lpzClass))
-		return 1;
+		return 1; 
 
 	GetWindowRect(GetDesktopWindow(), &screen_rect);
 	int posX = screen_rect.right / 2 - width / 2;
@@ -35,20 +43,52 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 	hWnd = CreateWindow(lpzClass, TEXT("Платформер"),
 		WS_OVERLAPPEDWINDOW | WS_VISIBLE, posX, posY, width, height, NULL, NULL,
 		hInstance, NULL);
-	hbitmap = LoadImage(NULL, TEXT("cat.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+	hbitmap = LoadImage(NULL, TEXT("player.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
 	drawer = new Drawer(hWnd, ps);
 	map = new Map();
 	map->LoadMap("map1.txt");
 	mapInfo = map->GetMapInfo();
-	drawer->SetDrawInfo(height, width, mapInfo);
+	drawer->SetDrawInfo(mapInfo); 
+
+	player = new Player(40, 57,(HBITMAP)hbitmap,5,12,8);
+	drawer->SetPlayer(player);
+
+	environment = new Environment(player,mapInfo,1);
+
 	ShowWindow(hWnd, nCmdShow);
 	UpdateWindow(hWnd);
 	InvalidateRect(hWnd, 0, true);
 
-	while (GetMessage(&msg, NULL, 0, 0))
-	{
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
+	QueryPerformanceCounter(&time);
+	while (isRunning) {
+		if (PeekMessage(&msg, hWnd, 0, 0, PM_REMOVE)) {
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
+		else
+		{
+			QueryPerformanceCounter(&currTime);
+			if (currTime.QuadPart - time.QuadPart > 1000/frameLim * ticksInMs)
+			{
+				QueryPerformanceCounter(&time);
+				if (GetKeyState(VK_UP) & 0x8000)
+					controls.up = true;
+				else
+					controls.up = false;
+				if (GetKeyState(VK_RIGHT) & 0x8000)
+					controls.right = true;
+				else
+					controls.right = false;
+				if (GetKeyState(VK_LEFT) & 0x8000)
+					controls.left = true;
+				else
+					controls.left = false;
+
+				environment->Cycle(controls);
+				InvalidateRect(hWnd, 0, true);
+			}
+			
+		}
 	}
 	map->DeleteMapInfo(mapInfo);
 
@@ -83,57 +123,26 @@ LRESULT CALLBACK WndProc(
 	switch (message)
 	{
 	case WM_PAINT:
+	
 		drawer->StartPaint();
 		drawer->DrawMap();
-		drawer->TestDraw(hbitmap, i, j);
+		drawer->DrawDynamicObjects();
 		drawer->DrawFromBuff();
 		drawer->FinishPaint();
 		break;
 	case WM_CHAR:
-		switch (wParam)
-		{
-		case 'w':
-		case 'W':
-			j -= 5;
-			break;
-		case 's':
-		case 'S':
-			j += 5;
-			break;
-		case 'a':
-		case 'A':
-			i -= 5;
-			break;
-		case 'd':
-		case 'D':
-			i += 5;
-			break;
-		}
-		InvalidateRect(hWnd, 0, true);
 		break;
 	case WM_KEYDOWN:
 		switch (wParam)
 		{
-		case VK_UP:
-			j -= 5;
-			break;
-		case VK_DOWN:
-			j += 5;
-			break;
-		case VK_LEFT:
-			i -= 5;
-			break;
-		case VK_RIGHT:
-			i += 5;
-			break;
 		case VK_ESCAPE:
 			if (MessageBox(hWnd, TEXT("Выход"), TEXT("событие"), MB_OKCANCEL) == IDOK)
 				PostQuitMessage(0);
 			break;
 		}
-		InvalidateRect(hWnd, 0, true);
 		break;
 	case WM_DESTROY:
+		isRunning = false;
 		PostQuitMessage(0);
 		break;
 	case WM_ERASEBKGND:
