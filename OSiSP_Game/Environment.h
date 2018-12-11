@@ -2,6 +2,13 @@
 #include "Player.h"
 #include "Map.h"
 #include "SimpleGround.h"
+#include "Lava.h"
+#include "Drawer.h"
+#include "Coin.h"
+#include "Enemy1.h"
+#include "Key.h"
+#include "Door.h"
+#include "basswv.h"
 
 struct UpdateCoords
 {
@@ -11,16 +18,27 @@ struct UpdateCoords
 class Environment
 {
 public:
-	Environment(Player*,MapInfo, int);
+	Environment(Drawer*,Player*,const char*, int);
 	void Cycle(Controls);
+	void SetDynamicObject(IDynamicObject*);
+	void SetMap(MapInfo);
+	void NextMap();
 	~Environment();
 private:
-	const int blockSize = 32;
+	const int blockSize = 32, maxObj = 200;
+	int currObjCount;
+	IDynamicObject** dynamicobjects;
 	Player* player;
-	MapInfo mapInfo;
+	Drawer* drawer;
+	Map* map;
+	MapInfo mapInfo,firstMap;
 	SimpleGround* simpleGround;
+	Lava* lava;
+	HSTREAM coinSound;
+	DynObjInfo coin;
 	int g;
-	DWORD time, prevTime;
+	bool prevPlayerState;
+	void ObjectCreation();
 	void CollisionX(IDynamicObject*);
 	void CollisionY(IDynamicObject*);
 	UpdateCoords GetCoordsForUpdate(CoordAndSize);

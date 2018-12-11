@@ -12,12 +12,16 @@ BBBBB                 BBBBOOOOOOOOOOBBBBBBB       B                          OOB
 BBBBBBB   BB   BB   BBBB            OOOBBBBB      B                          BBB
 BBLLBBBLLLLLLLLLLLLLBBBB        BB  OOOBBBBBBB  BBB                     O      B
 BBBBBBBBBBBBBBBBBBBBBBBB    BBBBBBBBBBBBOOO   OO         OO             B      B
-BLLBBBK    OOO   OOO       BBBBBBBBBOOO OOO   OO         BB         O     O    B
-BBBBBB                    BBBBLLBBBBOOO OOO   OO   OO               B     B   OB
-BBBBBB                    BBBBBBBLLBOOBBBBB   BB   BB           OO            OB
-BBBBBB  BBB   BBB   BBB  BBLLLBBBBBBBBBB                        BB            BB
-BBBBBBLLLLLLLLLLLLLLLLLLLBBBBBBBBBBBLLBBLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLB
+BLLBBBK    OOO   OOO       BBBBBBBBBB   OOO   OO         BB         O     O    B
+BBBBBB                    BBBBLLBBBBB   OOO   OO   OO               B     B   OB
+BB  BB                    BBBBBBBBBBBBBBBBB   BB   BB           OO            OB
+BBB BB  BBB   BBB   BBB  BBLLLBBLLBBBBBB                        BB            BB
+BBBBBBLLLLLLLLLLLLLLLLLLLBBBBBBBBBBLLLBBLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLB
 Path length: 7
 Path to sprites: sp1.txt
+Path length: 7
+Path to objs: ob1.txt
+Path length: 8
+Path to next: map2.txt
 Path length to background: 8
 Path to background: back.bmp

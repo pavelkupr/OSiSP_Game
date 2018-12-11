@@ -1,3 +1,4 @@
 ﻿C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(391,5): warning MSB8028: промежуточный каталог (Debug\) содержит файлы, которые используются совместно с другим проектом (OSiSP1.vcxproj).  Это может привести к ошибкам очистки и перестроения.
-  Environment.cpp
+  main.cpp
+d:\github\osisp_game\osisp_game\main.cpp(31): warning C4101: hMenu: неиспользованная локальная переменная
   OSiSP1.vcxproj -> D:\GitHub\OSiSP_Game\OSiSP_Game\Debug\OSiSP2.exe

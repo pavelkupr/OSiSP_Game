@@ -9,6 +9,15 @@ Drawer::Drawer(HWND hWND, PAINTSTRUCT ps)
 	buffHDC = NULL;
 	mapTemplate = NULL;
 	invMap = NULL;
+	life = LoadImage(NULL, TEXT("life.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+	key = LoadImage(NULL, TEXT("key1.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+	menu = LoadImage(NULL, TEXT("menu.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+	menuFont = CreateFont(42, 16, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
+		OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, VARIABLE_PITCH, L"Monotype Corsiva"); //Monotype Corsiva 36 10 Impact 36 20
+	menuHDC = CreateCompatibleDC(buffHDC);
+	SelectObject(menuHDC, menu);
+	SelectObject(menuHDC, menuFont);
+	SetBkMode(menuHDC, TRANSPARENT);
 	this->hWND = hWND;
 	this->ps = ps;
 }
@@ -36,6 +45,7 @@ void Drawer::SetDrawInfo(MapInfo mapInfo)
 	buffHDC = CreateCompatibleDC(currHDC);
 	buffer = CreateCompatibleBitmap(currHDC, wnd.x, wnd.y);
 	SelectObject(buffHDC, buffer);
+	SetBkMode(buffHDC, TRANSPARENT);
 	CreateMapTemplate(mapInfo);
 
 	EndPaint(hWND, &ps);
@@ -44,7 +54,6 @@ void Drawer::SetDrawInfo(MapInfo mapInfo)
 void Drawer::StartPaint()
 {
 	currHDC = BeginPaint(hWND, &ps);
-	BitBlt(buffHDC, 0, 0, wnd.x, wnd.y, backgroundHDC, 0, 0, SRCCOPY);
 }
 
 void Drawer::FinishPaint()
@@ -165,15 +174,66 @@ void Drawer::CreateMapTemplate(MapInfo mapInfo)
 	DeleteObject(brush);
 }
 
+int Drawer::PaintMenu(MenuControl control)
+{
+	SetTextColor(menuHDC, 0x00FFFFFF);
+	if ((control.i >= wnd.x / 2 - 16 * 4 && control.i <= wnd.x / 2 + 16 * 4) && (control.j >= 110 && control.j <= 150))
+	{
+		if (control.isPressed)
+			return 1;
+		SetTextColor(menuHDC, 0x000000FF);
+	}
+	TextOut(menuHDC, wnd.x/2-16*2, 110, CA2W("PLAY"), 4);
+	SetTextColor(menuHDC, 0x00FFFFFF);
+	if ((control.i >= wnd.x / 2 - 16 * 4 && control.i <= wnd.x / 2 + 16 * 4) && (control.j >= 170 && control.j <= 210))
+	{
+		if (control.isPressed)
+			return 2;
+		SetTextColor(menuHDC, 0x000000FF);
+	}
+	TextOut(menuHDC, wnd.x/2-16*2, 170, CA2W("EXIT"), 4);
+	BitBlt(buffHDC, 0, 0, wnd.x, wnd.y, menuHDC, 0, 0, SRCCOPY);
+	DrawFromBuff();
+	return 0;
+}
+
+void Drawer::Paint()
+{
+	BitBlt(buffHDC, 0, 0, wnd.x, wnd.y, backgroundHDC, 0, 0, SRCCOPY);
+	DrawMap();
+	DrawDynamicObjects();
+	DrawUI();
+	DrawFromBuff();
+}
+
 void Drawer::SetPlayer(Player* _player)
 {
 	player = _player;
 }
 
+void Drawer::SetDynamicObjects(IDynamicObject** objects,int* count)
+{
+	currObjCount = count;
+	dynamicobjects = objects;
+}
+
 void Drawer::DrawDynamicObjects()
 {
-	
-	DrawDynamicObject(player->GetDrawInfo(), player->GetCoordAndSize());
+	CoordAndSize currCoord;
+	for (int i = 0; i < *currObjCount; i++)
+	{
+		currCoord = dynamicobjects[i]->GetCoordAndSize();
+		if((currCoord.x < camera.x+wnd.x && currCoord.x+ currCoord.width > camera.x) && 
+			(currCoord.y < camera.y + wnd.y && currCoord.y + currCoord.height > camera.y))
+			DrawDynamicObject(dynamicobjects[i]->GetDrawInfo(), currCoord);
+	}
+	if (player->IsVisible())
+		DrawDynamicObject(player->GetDrawInfo(), player->GetCoordAndSize());
+	SetOffset();
+}
+
+void Drawer::SetOffset()
+{
 	CoordAndSize coordAndSize = player->GetCoordAndSize();
 	int offsetX = map.x - (map.x - coordAndSize.x - coordAndSize.width / 2) - wnd.x / 2;
 	int offsetY = map.y - (map.y - coordAndSize.y - coordAndSize.height / 2) - wnd.y / 2;
@@ -191,6 +251,8 @@ void Drawer::DrawDynamicObjects()
 
 void Drawer::DrawDynamicObject(ObjDrawInfo objDrawInfo, CoordAndSize coordAndSize)
 {
+	if (!objDrawInfo.isDraw)
+		return;
 	HDC imgHDC, spriteHDC;
 	HBITMAP sprite;
 	imgHDC = CreateCompatibleDC(buffHDC);
@@ -215,8 +277,8 @@ void Drawer::DrawDynamicObject(ObjDrawInfo objDrawInfo, CoordAndSize coordAndSiz
 void Drawer::DrawMap()
 {	
 	HDC mapHDC, invMapHDC;
-	mapHDC = CreateCompatibleDC(currHDC);
-	invMapHDC = CreateCompatibleDC(currHDC);
+	mapHDC = CreateCompatibleDC(buffHDC);
+	invMapHDC = CreateCompatibleDC(buffHDC);
 	SelectObject(mapHDC, mapTemplate);
 	SelectObject(invMapHDC, invMap);
 
@@ -229,7 +291,9 @@ void Drawer::DrawMap()
 
 void Drawer::DrawFromBuff()
 {
+	StartPaint();
 	BitBlt(currHDC, 0, 0, wnd.x, wnd.y, buffHDC, 0, 0, SRCCOPY);
+	FinishPaint();
 }
 
 SpriteDrawInfo* Drawer::GetSpritesDrawInfo(SpriteInfo* spritesInfo, int count)
@@ -243,6 +307,28 @@ SpriteDrawInfo* Drawer::GetSpritesDrawInfo(SpriteInfo* spritesInfo, int count)
 	return result;
 }
 
+void Drawer::DrawUI()
+{
+	char curr[3];
+	int count = player->GetCoinCount();
+
+	for (int i = 0; i < player->GetLifeCount()+ player->GetKeyCount(); i++)
+	{
+		if(i < player->GetLifeCount())
+			DrawSprite(buffHDC, life, blockSize / 2 * i, 0, transparentColor);
+		else
+			DrawSprite(buffHDC, key, blockSize / 2 * i, 0, transparentColor);
+	}
+	curr[0] = 48 + count / 100;
+	count -= (count / 100) * 100;
+	curr[1] = 48 + count / 10;
+	count -= (count / 10) * 10;
+	curr[2] = 48 + count;
+	SetTextColor(buffHDC, 0x0000FFFF);
+	TextOut(buffHDC, wnd.x-28, 0, CA2W(curr), 3);
+	SetTextColor(buffHDC, 0x00000000);
+}
+
 void Drawer::DeleteSpritesDrawInfo(SpriteDrawInfo* spritesInfo, int count)
 {
 	for (int i = 0; i < count; i++)
@@ -250,20 +336,6 @@ void Drawer::DeleteSpritesDrawInfo(SpriteDrawInfo* spritesInfo, int count)
 		DeleteObject(spritesInfo[i].bitmap);
 	}
 	delete spritesInfo;
-}
-
-void Drawer::Invert(HDC hdc)
-{
-	XFORM xForm;
-
-	xForm.eM11 = -1.0;
-	xForm.eM12 = 0.0;
-	xForm.eM21 = 0.0;
-	xForm.eM22 = -1.0;
-	xForm.eDx =  0.0;
-	xForm.eDy =  0.0;
-
-	SetWorldTransform(hdc, &xForm);
 }
 
 Drawer::~Drawer()

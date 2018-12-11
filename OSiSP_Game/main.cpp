@@ -1,22 +1,25 @@
-﻿#include <windows.h>
-#include "Map.h"
+﻿#include <Windows.h>
 #include "Drawer.h"
 #include "Player.h"
-#include "IDynamicObject.h"
 #include "Environment.h"
+#include "basswv.h"
+#pragma comment(lib, "bass")
+#pragma comment(lib, "basswv")
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 ATOM RegMyWindowClass(HINSTANCE, LPCTSTR);
 
-int height = 450, width = 750;//450 750 600 1000;
+int height = 450, width = 750;
 int i = 50, j = 50;
-bool isRunning = true;
+bool isRunning = true,isMenu = true;
 const int ticksInMs = 1800, frameLim = 30;
 
 Drawer* drawer = NULL;
 PAINTSTRUCT ps;
 HANDLE hbitmap;
 MapInfo mapInfo;
+MenuControl menuControl;
+
 int APIENTRY WinMain(HINSTANCE hInstance,
 	HINSTANCE         hPrevInstance,
 	LPSTR             lpCmdLine,
@@ -25,16 +28,19 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 	MSG msg;
 	RECT screen_rect;
 	HWND hWnd;
-	Map* map;
 	HMENU hMenu;
 	Player* player;
 	Environment* environment;
 	Controls controls;
 	LARGE_INTEGER time, currTime;
 	LPCTSTR lpzClass = TEXT("MyClass");
-	
 	if (!RegMyWindowClass(hInstance, lpzClass))
 		return 1; 
+	
+	BASS_Init(-1, 44100, BASS_DEVICE_3D, 0, NULL);
+	HSTREAM music = BASS_StreamCreateFile(FALSE, TEXT("music.wav"), 0, 0, 0);
+	BASS_ChannelFlags(music, BASS_SAMPLE_LOOP, BASS_SAMPLE_LOOP);
+	BASS_ChannelPlay(music, TRUE);
 
 	GetWindowRect(GetDesktopWindow(), &screen_rect);
 	int posX = screen_rect.right / 2 - width / 2;
@@ -44,16 +50,13 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 		WS_OVERLAPPEDWINDOW | WS_VISIBLE, posX, posY, width, height, NULL, NULL,
 		hInstance, NULL);
 	hbitmap = LoadImage(NULL, TEXT("player.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
+
+
 	drawer = new Drawer(hWnd, ps);
-	map = new Map();
-	map->LoadMap("map1.txt");
-	mapInfo = map->GetMapInfo();
-	drawer->SetDrawInfo(mapInfo); 
 
-	player = new Player(40, 57,(HBITMAP)hbitmap,5,12,8);
-	drawer->SetPlayer(player);
+	player = new Player(64, 64,(HBITMAP)hbitmap,5,12,8);
 
-	environment = new Environment(player,mapInfo,1);
+	environment = new Environment(drawer, player, "map1.txt",1);
 
 	ShowWindow(hWnd, nCmdShow);
 	UpdateWindow(hWnd);
@@ -68,7 +71,11 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 		else
 		{
 			QueryPerformanceCounter(&currTime);
-			if (currTime.QuadPart - time.QuadPart > 1000/frameLim * ticksInMs)
+			if (isMenu)
+			{
+				InvalidateRect(hWnd, 0, true);
+			}
+			else if (currTime.QuadPart - time.QuadPart > 1000/frameLim * ticksInMs)
 			{
 				QueryPerformanceCounter(&time);
 				if (GetKeyState(VK_UP) & 0x8000)
@@ -90,9 +97,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 			
 		}
 	}
-	map->DeleteMapInfo(mapInfo);
 
-	delete map;
 	delete drawer;
 	return (int)msg.wParam;
 }
@@ -123,12 +128,20 @@ LRESULT CALLBACK WndProc(
 	switch (message)
 	{
 	case WM_PAINT:
-	
-		drawer->StartPaint();
-		drawer->DrawMap();
-		drawer->DrawDynamicObjects();
-		drawer->DrawFromBuff();
-		drawer->FinishPaint();
+		if (isMenu)
+		{
+			int result = drawer->PaintMenu(menuControl);
+			if (result == 1)
+				isMenu = false;
+			else if (result == 2)
+			{
+				isRunning = false;
+				PostQuitMessage(0);
+			}
+			menuControl.isPressed = false;
+		}
+		else
+			drawer->Paint();
 		break;
 	case WM_CHAR:
 		break;
@@ -136,10 +149,16 @@ LRESULT CALLBACK WndProc(
 		switch (wParam)
 		{
 		case VK_ESCAPE:
-			if (MessageBox(hWnd, TEXT("Выход"), TEXT("событие"), MB_OKCANCEL) == IDOK)
-				PostQuitMessage(0);
+			isMenu = !isMenu;
 			break;
 		}
+		break;
+	case WM_LBUTTONDOWN:
+		menuControl.isPressed = true;
+		break;
+	case WM_MOUSEMOVE:
+		menuControl.i = LOWORD(lParam);
+		menuControl.j = HIWORD(lParam);
 		break;
 	case WM_DESTROY:
 		isRunning = false;

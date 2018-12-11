@@ -1,4 +1,4 @@
-CountOfSprites: 2
+CountOfSprites: 3
 Code: B
 SpaceX: 1
 SpaceY: 1

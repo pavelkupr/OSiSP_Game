@@ -1,0 +1,27 @@
+i: 17
+j: 80
+BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB
+B                                   BBBB                                    BBBB
+B                                    BBBD  OO    OOO                         BBB
+B                                     BB   OO    O O   OOO                    BB
+BBBBBB                                 BBBBBBOOO     O       OOO               B
+B                                           BBBB     B     O       OOO         B
+B       O                                                  B     O             B
+BOO   BBB      O                                                 B     O       B
+BOO    BB      B      O                                                B      OB
+BBB     B      B      B      O                                               OOB
+BLLLLLLLBLLLLLLBLLLLLLB      B      O     O                                 OBBB
+BBBBBBBBBBBBBBBBBBBBBBB      B      B     B                               OOBBBB
+BOOO    OOO OOO OOO  BBLLLLLLBLLLLLLBLLLLLBB             O                BBBBBB
+BOKO    OOO OOO OOO   BBBBBBBBBBBBBBBBBBBBBB        O    B            O   BBBBBB
+BOOO                  OOO  OOO  OOO  OOO  OOO       B            O    B     BBBB
+BBBBBBBB   B   B   B  OOO  OOO  OOO  OOO  OOO B                  B           BBB
+BBBBBBBBLLLLLLLLLLLBBBBBBBBBBBBBBBBBBBBBBBBBBBBLLLLLLLLLLLLLLLLLLBLLLLLLLLLLLBBB
+Path length: 7
+Path to sprites: sp1.txt
+Path length: 7
+Path to objs: ob2.txt
+Path length: 8
+Path to next: map1.txt
+Path length to background: 8
+Path to background: back.bmp

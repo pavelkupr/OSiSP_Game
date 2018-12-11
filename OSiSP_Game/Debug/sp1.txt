@@ -1,0 +1,11 @@
+CountOfSprites: 3
+Code: B
+SpaceX: 1
+SpaceY: 1
+Path length: 7
+Path: Grn.bmp
+Code: L
+SpaceX: 1
+SpaceY: 1
+Path length: 8
+Path: Lava.bmp
