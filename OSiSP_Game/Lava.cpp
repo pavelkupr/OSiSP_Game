@@ -1,7 +1,5 @@
 #include "Lava.h"
 
-
-
 Lava::Lava()
 {
 }

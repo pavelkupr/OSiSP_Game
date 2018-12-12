@@ -1,9 +1,9 @@
 #pragma once
-#include "IDynamicObject.h"
+#include "NonPlayble.h"
 #include "Player.h"
 
 class Door :
-	public IDynamicObject
+	public NonPlayble
 {
 public:
 	Door(int, int, HBITMAP,Player*);
@@ -20,13 +20,10 @@ public:
 	void Hit() override;
 	bool IsLive() override;
 	bool IsVisible() override;
-	void Interact(IDynamicObject*) override;
-	void SetCoins(int) override;
-	void SetKey(int) override;
-	bool IsImmune() override;
+	void Interact(Player*) override;
 	~Door();
 private:
-	int frameCount, g, ySpeed, lifeCount, mode;
+	int frameCount, ySpeed, mode;
 	bool onGrnd, isLive, isVisible;
 	float frameScale;
 	Player* player;

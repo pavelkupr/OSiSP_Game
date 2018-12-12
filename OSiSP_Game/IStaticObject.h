@@ -1,6 +1,6 @@
 #pragma once
+#include <Windows.h>
 #include "IDynamicObject.h"
-#include "Windows.h"
 
 class IStaticObject
 {

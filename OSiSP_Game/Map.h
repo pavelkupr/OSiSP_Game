@@ -1,6 +1,6 @@
 #pragma once
-#include <atlstr.h>
 #include <Windows.h>
+#include <atlstr.h>
 
 struct SpriteInfo
 {

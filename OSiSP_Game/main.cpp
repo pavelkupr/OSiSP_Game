@@ -2,9 +2,7 @@
 #include "Drawer.h"
 #include "Player.h"
 #include "Environment.h"
-#include "basswv.h"
-#pragma comment(lib, "bass")
-#pragma comment(lib, "basswv")
+#include "bass.h"
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);
 ATOM RegMyWindowClass(HINSTANCE, LPCTSTR);
@@ -15,7 +13,6 @@ bool isRunning = true,isMenu = true;
 const int ticksInMs = 1800, frameLim = 30;
 
 Drawer* drawer = NULL;
-PAINTSTRUCT ps;
 HANDLE hbitmap;
 MapInfo mapInfo;
 MenuControl menuControl;
@@ -28,7 +25,6 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 	MSG msg;
 	RECT screen_rect;
 	HWND hWnd;
-	HMENU hMenu;
 	Player* player;
 	Environment* environment;
 	Controls controls;
@@ -47,12 +43,12 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 	int posY = screen_rect.bottom / 2 - height / 2;
 
 	hWnd = CreateWindow(lpzClass, TEXT("Платформер"),
-		WS_OVERLAPPEDWINDOW | WS_VISIBLE, posX, posY, width, height, NULL, NULL,
+		WS_SYSMENU, posX, posY, width, height, NULL, NULL,
 		hInstance, NULL);
 	hbitmap = LoadImage(NULL, TEXT("player.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
 
 
-	drawer = new Drawer(hWnd, ps);
+	drawer = new Drawer(hWnd);
 
 	player = new Player(64, 64,(HBITMAP)hbitmap,5,12,8);
 

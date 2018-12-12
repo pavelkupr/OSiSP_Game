@@ -1,7 +1,7 @@
 #pragma once
+#include <Windows.h>
 #include "IDynamicObject.h"
-#include "Windows.h"
-#include "basswv.h"
+#include "bass.h"
 
 struct Controls
 {
@@ -13,7 +13,6 @@ class Player : public IDynamicObject
 public:
 	Player(int, int, HBITMAP, int, int, int);
 	void Move(Controls);
-	void Move() override;
 	void SetG(int) override;
 	void SetOnGrnd() override;
 	ObjDrawInfo GetDrawInfo() override;
@@ -26,10 +25,9 @@ public:
 	void Hit() override;
 	bool IsLive() override;
 	bool IsVisible() override;
-	void Interact(IDynamicObject*) override;
-	void SetCoins(int) override;
-	void SetKey(int) override;
-	bool IsImmune() override;
+	void SetCoins(int);
+	void SetKey(int);
+	bool IsImmune();
 	int GetLifeCount();
 	int GetKeyCount();
 	int GetCoinCount();

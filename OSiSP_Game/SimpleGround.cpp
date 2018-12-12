@@ -1,7 +1,5 @@
 #include "SimpleGround.h"
 
-
-
 SimpleGround::SimpleGround()
 {
 	

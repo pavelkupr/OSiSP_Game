@@ -8,7 +8,7 @@
 #include "Enemy1.h"
 #include "Key.h"
 #include "Door.h"
-#include "basswv.h"
+#include "bass.h"
 
 struct UpdateCoords
 {
@@ -20,14 +20,14 @@ class Environment
 public:
 	Environment(Drawer*,Player*,const char*, int);
 	void Cycle(Controls);
-	void SetDynamicObject(IDynamicObject*);
+	void SetNonPlaybleObject(NonPlayble*);
 	void SetMap(MapInfo);
 	void NextMap();
 	~Environment();
 private:
 	const int blockSize = 32, maxObj = 200;
 	int currObjCount;
-	IDynamicObject** dynamicobjects;
+	NonPlayble** nonPlaybleObjects;
 	Player* player;
 	Drawer* drawer;
 	Map* map;

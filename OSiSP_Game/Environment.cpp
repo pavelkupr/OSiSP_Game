@@ -1,7 +1,5 @@
 #include "Environment.h"
 
-
-
 Environment::Environment(Drawer* drawer, Player* player, const char* map, int g)
 {
 	this->g = g;
@@ -15,16 +13,16 @@ Environment::Environment(Drawer* drawer, Player* player, const char* map, int g)
 	drawer->SetPlayer(player);
 	player->SetG(g);
 	prevPlayerState = true;
-	dynamicobjects = (IDynamicObject**)malloc(sizeof(IDynamicObject**) * maxObj);
+	nonPlaybleObjects = (NonPlayble**)malloc(sizeof(NonPlayble**) * maxObj);
 	for (int i = 0; i < maxObj; i++)
 	{
-		dynamicobjects[i] = 0;
+		nonPlaybleObjects[i] = 0;
 	}
 	currObjCount = 0;
 	simpleGround = new SimpleGround();
 	lava = new Lava();
 	drawer->SetDrawInfo(mapInfo);
-	drawer->SetDynamicObjects(dynamicobjects, &currObjCount);
+	drawer->SetNonPlaybleObjects(nonPlaybleObjects, &currObjCount);
 	ObjectCreation();
 }
 
@@ -58,16 +56,19 @@ void Environment::ObjectCreation()
 			switch (mapInfo.objsInfo[i].code)
 			{
 			case'C':
-				SetDynamicObject(new Coin(mapInfo.objsInfo[i].coords[j].x*blockSize, mapInfo.objsInfo[i].coords[j].y*blockSize, (HBITMAP)curr, mapInfo.objsInfo[i].frameCount, mapInfo.objsInfo[i].mode, coinSound));
+				SetNonPlaybleObject(new Coin(mapInfo.objsInfo[i].coords[j].x*blockSize, mapInfo.objsInfo[i].coords[j].y*blockSize, (HBITMAP)curr, mapInfo.objsInfo[i].frameCount, mapInfo.objsInfo[i].mode, coinSound));
 				break;
 			case'E':
-				SetDynamicObject(new Enemy1(mapInfo.objsInfo[i].coords[j].x*blockSize, mapInfo.objsInfo[i].coords[j].y*blockSize, (HBITMAP)curr, mapInfo.objsInfo[i].frameCount,4, mapInfo.objsInfo[i].mode*blockSize));
+				if(mapInfo.objsInfo[i].mode >= 0)
+					SetNonPlaybleObject(new Enemy1(mapInfo.objsInfo[i].coords[j].x*blockSize, mapInfo.objsInfo[i].coords[j].y*blockSize, (HBITMAP)curr, mapInfo.objsInfo[i].frameCount,4, mapInfo.objsInfo[i].mode*blockSize));
+				else
+					SetNonPlaybleObject(new Enemy1(mapInfo.objsInfo[i].coords[j].x*blockSize, mapInfo.objsInfo[i].coords[j].y*blockSize, (HBITMAP)curr, mapInfo.objsInfo[i].frameCount, 7, mapInfo.objsInfo[i].mode*blockSize));
 				break;
 			case'K':
-				SetDynamicObject(new Key(mapInfo.objsInfo[i].coords[j].x*blockSize, mapInfo.objsInfo[i].coords[j].y*blockSize, (HBITMAP)curr, mapInfo.objsInfo[i].frameCount, mapInfo.objsInfo[i].mode));
+				SetNonPlaybleObject(new Key(mapInfo.objsInfo[i].coords[j].x*blockSize, mapInfo.objsInfo[i].coords[j].y*blockSize, (HBITMAP)curr, mapInfo.objsInfo[i].frameCount, mapInfo.objsInfo[i].mode));
 				break;
 			case'D':
-				SetDynamicObject(new Door(mapInfo.objsInfo[i].coords[j].x*blockSize, mapInfo.objsInfo[i].coords[j].y*blockSize+4, (HBITMAP)curr, player));
+				SetNonPlaybleObject(new Door(mapInfo.objsInfo[i].coords[j].x*blockSize, mapInfo.objsInfo[i].coords[j].y*blockSize+4, (HBITMAP)curr, player));
 				break;
 			default:
 				break;
@@ -80,22 +81,22 @@ void Environment::Cycle(Controls controls)
 {
 	for (int i = 0; i < currObjCount; i++)
 	{
-		if (dynamicobjects[i] != 0)
+		if (nonPlaybleObjects[i] != 0)
 		{
-			if (dynamicobjects[i]->IsVisible())
+			if (nonPlaybleObjects[i]->IsVisible())
 			{
-				dynamicobjects[i]->Move();
-				CollisionX(dynamicobjects[i]);
-				CollisionY(dynamicobjects[i]);
+				nonPlaybleObjects[i]->Move();
+				CollisionX(nonPlaybleObjects[i]);
+				CollisionY(nonPlaybleObjects[i]);
 			}
 
-			if(!dynamicobjects[i]->IsVisible())
+			if(!nonPlaybleObjects[i]->IsVisible())
 			{
-				delete dynamicobjects[i];
-				dynamicobjects[i] = 0;
+				delete nonPlaybleObjects[i];
+				nonPlaybleObjects[i] = 0;
 				for (int j = i + 1; j < currObjCount; j++)
 				{
-					dynamicobjects[j - 1] = dynamicobjects[j];
+					nonPlaybleObjects[j - 1] = nonPlaybleObjects[j];
 				}
 				currObjCount--;
 				i--;
@@ -112,13 +113,13 @@ void Environment::Cycle(Controls controls)
 		{
 			for (int i = 0; i < currObjCount; i++)
 			{
-				if (dynamicobjects[i]->IsVisible())
+				if (nonPlaybleObjects[i]->IsVisible())
 				{
-					if (player->GetCoordAndSize().x + player->GetCoordAndSize().width > dynamicobjects[i]->GetCoordAndSize().x &&
-						player->GetCoordAndSize().x < dynamicobjects[i]->GetCoordAndSize().x + dynamicobjects[i]->GetCoordAndSize().width)
-						if (player->GetCoordAndSize().y + player->GetCoordAndSize().height > dynamicobjects[i]->GetCoordAndSize().y &&
-							player->GetCoordAndSize().y < dynamicobjects[i]->GetCoordAndSize().y + dynamicobjects[i]->GetCoordAndSize().height)
-							dynamicobjects[i]->Interact(player);
+					if (player->GetCoordAndSize().x + player->GetCoordAndSize().width > nonPlaybleObjects[i]->GetCoordAndSize().x &&
+						player->GetCoordAndSize().x < nonPlaybleObjects[i]->GetCoordAndSize().x + nonPlaybleObjects[i]->GetCoordAndSize().width)
+						if (player->GetCoordAndSize().y + player->GetCoordAndSize().height > nonPlaybleObjects[i]->GetCoordAndSize().y &&
+							player->GetCoordAndSize().y < nonPlaybleObjects[i]->GetCoordAndSize().y + nonPlaybleObjects[i]->GetCoordAndSize().height)
+							nonPlaybleObjects[i]->Interact(player);
 				}
 			}
 		}
@@ -140,7 +141,7 @@ void Environment::Cycle(Controls controls)
 			HANDLE curr = LoadImage(NULL, CA2W(coin.pathToImg), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
 			for (int i = 0; i < 5 && coins > 0; i++)
 			{
-				SetDynamicObject(new Coin(player->GetCoordAndSize().x,
+				SetNonPlaybleObject(new Coin(player->GetCoordAndSize().x,
 					player->GetCoordAndSize().y, (HBITMAP)curr, coin.frameCount, 1, coinSound));
 				coins--;
 				player->SetCoins(-1);
@@ -204,12 +205,12 @@ void Environment::CollisionY(IDynamicObject* dynamicObject)
 		dynamicObject->RespawnOrDispose();
 }
 
-void Environment::SetDynamicObject(IDynamicObject* object)
+void Environment::SetNonPlaybleObject(NonPlayble* object)
 {
 	if (currObjCount < maxObj)
 	{
-		dynamicobjects[currObjCount] = object;
-		dynamicobjects[currObjCount]->SetG(g);
+		nonPlaybleObjects[currObjCount] = object;
+		nonPlaybleObjects[currObjCount]->SetG(g);
 		currObjCount++;
 	}
 }

@@ -1,13 +1,13 @@
 #include "Door.h"
 
-
-
 Door::Door(int x, int y, HBITMAP img,Player* player)
 {
 	BITMAP bm;
 	GetObject(img, sizeof(BITMAP), (LPSTR)&bm);
 	coordAndSize.x = x;
 	coordAndSize.y = y;
+	prevMovement.x = 0;
+	prevMovement.y = 0;
 	coordAndSize.width = bm.bmWidth / 2;
 	coordAndSize.height = bm.bmHeight;
 	this->player = player;
@@ -17,7 +17,6 @@ Door::Door(int x, int y, HBITMAP img,Player* player)
 	drawInfo.isInvert = false;
 	isLive = true;
 	isVisible = true;
-	lifeCount = 1;
 }
 
 void Door::Move()
@@ -29,7 +28,7 @@ void Door::Move()
 
 }
 
-void Door::Interact(IDynamicObject* object)
+void Door::Interact(Player* object)
 {
 	if (player->GetKeyCount() > 0)
 	{
@@ -56,21 +55,6 @@ bool Door::IsVisible()
 	return isVisible;
 }
 
-void Door::SetYSpeed(int ySpeed)
-{
-	this->ySpeed = ySpeed;
-}
-
-void Door::Kill()
-{
-	lifeCount = 0;
-}
-
-void Door::Hit()
-{
-	lifeCount--;
-}
-
 PrevMovement Door::GetPrevMovement()
 {
 	return prevMovement;
@@ -92,21 +76,11 @@ void Door::SetCoord(int x, int y)
 	coordAndSize.y = y;
 }
 
-void Door::SetCoins(int count)
-{
-}
-
-void Door::SetG(int value)
-{
-	g = value;
-}
-
-void Door::SetOnGrnd()
-{
-	onGrnd = true;
-}
-bool Door::IsImmune() { return false; }
-void Door::SetKey(int) {}
+void Door::SetYSpeed(int ySpeed) {}
+void Door::SetG(int value){}
+void Door::SetOnGrnd(){}
+void Door::Kill() {}
+void Door::Hit() {}
 Door::~Door()
 {
 }

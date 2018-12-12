@@ -10,6 +10,9 @@ Coin::Coin(int x, int y, HBITMAP img,int frames, int mode, HSTREAM sound)
 	coordAndSize.width = bm.bmWidth / frames;
 	coordAndSize.height = bm.bmHeight;
 	coin = sound;
+	frameScale = rand() % frames;
+	lifeCount = 1;
+	frameCount = frames;
 	drawInfo.bitmap = img;
 	drawInfo.currFrame = 0;
 	drawInfo.isDraw = true;
@@ -36,9 +39,6 @@ Coin::Coin(int x, int y, HBITMAP img,int frames, int mode, HSTREAM sound)
 		ySpeed = 0;
 		xSpeed = 0;
 	}
-	frameScale = rand() % frames;
-	lifeCount = 1;
-	frameCount = frames;
 }
 
 void Coin::Move()
@@ -78,7 +78,7 @@ void Coin::Move()
 
 	if (mode == 1)
 	{
-		xSpeed = xSpeed / 1.1;
+		xSpeed = xSpeed / 1.05;
 		coordAndSize.x -= xSpeed;
 		prevMovement.x = -xSpeed;
 		if (onGrnd)
@@ -100,12 +100,11 @@ void Coin::Move()
 
 }
 
-void Coin::Interact(IDynamicObject* object)
+void Coin::Interact(Player* object)
 {
 	if (!object->IsImmune())
 	{
 		BASS_ChannelPlay(coin, TRUE);
-		//PlaySound(L"coin.wav", NULL, SND_FILENAME | SND_ASYNC);
 		object->SetCoins(1);
 		isVisible = false;
 	}
@@ -130,7 +129,7 @@ bool Coin::IsVisible()
 void Coin::SetYSpeed(int ySpeed)
 {	
 	if(ySpeed == 0)
-		this->ySpeed = -this->ySpeed/1.2;
+		this->ySpeed = -this->ySpeed/1.3;
 	else
 		this->ySpeed = ySpeed;
 }
@@ -168,10 +167,6 @@ void Coin::SetCoord(int x, int y)
 	coordAndSize.y = y;
 }
 
-void Coin::SetCoins(int count)
-{
-}
-
 void Coin::SetG(int value)
 {
 	g = value;
@@ -181,8 +176,6 @@ void Coin::SetOnGrnd()
 {
 	onGrnd = true;
 }
-bool Coin::IsImmune() { return false; }
-void Coin::SetKey(int) {}
 Coin::~Coin()
 {
 }

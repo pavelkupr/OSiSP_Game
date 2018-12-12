@@ -1,1 +1,35 @@
-CountOfObjs: 0
+CountOfObjs: 3
+Code: C
+Coords length: 6
+X: 8
+Y: 6
+X: 15
+Y: 7
+X: 22
+Y: 8
+X: 29
+Y: 9
+X: 36
+Y: 10
+X: 42
+Y: 10
+Frames: 10
+Mode: 0
+Path length: 8
+Path: coin.bmp
+Code: K
+Coords length: 1
+X: 2
+Y: 13
+Frames: 1
+Mode: 0
+Path length: 7
+Path: key.bmp
+Code: D
+Coords length: 1
+X: 40
+Y: 2
+Frames: 2
+Mode: 0
+Path length: 8
+Path: door.bmp

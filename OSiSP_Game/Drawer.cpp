@@ -1,6 +1,6 @@
 #include "Drawer.h"
 
-Drawer::Drawer(HWND hWND, PAINTSTRUCT ps)
+Drawer::Drawer(HWND hWND)
 {
 	transparentColor = 0x00FFFFFF;
 	background = NULL;
@@ -13,13 +13,12 @@ Drawer::Drawer(HWND hWND, PAINTSTRUCT ps)
 	key = LoadImage(NULL, TEXT("key1.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
 	menu = LoadImage(NULL, TEXT("menu.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
 	menuFont = CreateFont(42, 16, 0, 0, FW_NORMAL, FALSE, FALSE, FALSE, DEFAULT_CHARSET,
-		OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, VARIABLE_PITCH, L"Monotype Corsiva"); //Monotype Corsiva 36 10 Impact 36 20
+		OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, VARIABLE_PITCH, L"Monotype Corsiva");
 	menuHDC = CreateCompatibleDC(buffHDC);
 	SelectObject(menuHDC, menu);
 	SelectObject(menuHDC, menuFont);
 	SetBkMode(menuHDC, TRANSPARENT);
 	this->hWND = hWND;
-	this->ps = ps;
 }
  
 void Drawer::SetDrawInfo(MapInfo mapInfo)
@@ -33,12 +32,13 @@ void Drawer::SetDrawInfo(MapInfo mapInfo)
 		DeleteObject(buffer);
 	if (buffHDC != NULL)
 		DeleteDC(buffHDC);
+	camera.x = 0;
+	camera.y = 0;
 	currHDC = BeginPaint(hWND, &ps);
+
 	GetClientRect(hWND, (LPRECT)&rect);
 	wnd.x = rect.right;
 	wnd.y = rect.bottom;
-	camera.x = 0;
-	camera.y = 0;
 	background = LoadImage(NULL, CA2W(mapInfo.backgroundPath), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
 	backgroundHDC = CreateCompatibleDC(currHDC);
 	SelectObject(backgroundHDC, background);
@@ -211,10 +211,10 @@ void Drawer::SetPlayer(Player* _player)
 	player = _player;
 }
 
-void Drawer::SetDynamicObjects(IDynamicObject** objects,int* count)
+void Drawer::SetNonPlaybleObjects(NonPlayble** objects,int* count)
 {
 	currObjCount = count;
-	dynamicobjects = objects;
+	nonPlaybleObjects = objects;
 }
 
 void Drawer::DrawDynamicObjects()
@@ -222,10 +222,10 @@ void Drawer::DrawDynamicObjects()
 	CoordAndSize currCoord;
 	for (int i = 0; i < *currObjCount; i++)
 	{
-		currCoord = dynamicobjects[i]->GetCoordAndSize();
+		currCoord = nonPlaybleObjects[i]->GetCoordAndSize();
 		if((currCoord.x < camera.x+wnd.x && currCoord.x+ currCoord.width > camera.x) && 
 			(currCoord.y < camera.y + wnd.y && currCoord.y + currCoord.height > camera.y))
-			DrawDynamicObject(dynamicobjects[i]->GetDrawInfo(), currCoord);
+			DrawDynamicObject(nonPlaybleObjects[i]->GetDrawInfo(), currCoord);
 	}
 	if (player->IsVisible())
 		DrawDynamicObject(player->GetDrawInfo(), player->GetCoordAndSize());
@@ -340,6 +340,11 @@ void Drawer::DeleteSpritesDrawInfo(SpriteDrawInfo* spritesInfo, int count)
 
 Drawer::~Drawer()
 {
+	DeleteDC(menuHDC);
+	DeleteObject(menu);
+	DeleteObject(key);
+	DeleteObject(life);
+	DeleteObject(menuFont);
 	if (background != NULL)
 		DeleteObject(background);
 	if (backgroundHDC != NULL)

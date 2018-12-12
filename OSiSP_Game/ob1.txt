@@ -1,4 +1,4 @@
-CountOfObjs: 6
+CountOfObjs: 9
 Code: C
 Coords length: 100
 X: 12
@@ -229,6 +229,30 @@ Frames: 5
 Mode: 46
 Path length: 10
 Path: Enemy1.bmp
+Code: E
+Coords length: 1
+X: 29
+Y: 7
+Frames: 4
+Mode: -1
+Path length: 7
+Path: bat.bmp
+Code: E
+Coords length: 1
+X: 63
+Y: 14
+Frames: 4
+Mode: -2
+Path length: 7
+Path: bat.bmp
+Code: E
+Coords length: 1
+X: 57
+Y: 8
+Frames: 4
+Mode: -2
+Path length: 7
+Path: bat.bmp
 Code: K
 Coords length: 1
 X: 6

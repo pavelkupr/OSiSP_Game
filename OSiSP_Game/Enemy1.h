@@ -1,7 +1,9 @@
 #pragma once
-#include "IDynamicObject.h"
+#include "NonPlayble.h"
+#include "Player.h"
+
 class Enemy1 :
-	public IDynamicObject
+	public NonPlayble
 {
 public:
 	Enemy1(int, int, HBITMAP, int, int, int);
@@ -18,13 +20,12 @@ public:
 	void Hit() override;
 	bool IsLive() override;
 	bool IsVisible() override;
-	void Interact(IDynamicObject*) override;
-	void SetCoins(int) override;
-	void SetKey(int) override;
-	bool IsImmune() override;
+	void Interact(Player*) override;
 	~Enemy1();
 private:
-	int frameCount, g, _speed, dest, ySpeed, lifeCount, coinCount, start, end;
+	void MoveType1();
+	void MoveType2();
+	int frameCount, g, _speed, dest, ySpeed, lifeCount, coinCount, start, end,mode;
 	POINT resp;
 	bool onGrnd, isLive, isVisible;
 	float frameScale;

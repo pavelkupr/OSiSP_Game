@@ -1,14 +1,11 @@
 #include "Enemy1.h"
 
-
-
-Enemy1::Enemy1(int x, int y, HBITMAP img, int frames, int speed, int xFin)
+Enemy1::Enemy1(int x, int y, HBITMAP img, int frames, int speed, int Final)
 {
 	BITMAP bm;
 	GetObject(img, sizeof(BITMAP), (LPSTR)&bm);
 	resp.x = x;
 	resp.y = y;
-	start = x;
 	coordAndSize.x = x;
 	coordAndSize.y = y;
 	coordAndSize.width = bm.bmWidth / frames;
@@ -23,16 +20,41 @@ Enemy1::Enemy1(int x, int y, HBITMAP img, int frames, int speed, int xFin)
 	isLive = true;
 	isVisible = true;
 	_speed = speed;
-	end = xFin;
-	dest = xFin;
 	coinCount = 0;
 	ySpeed = 0;
 	frameScale = 1;
 	lifeCount = 3;
 	frameCount = frames;
+	if (Final >= 0)
+	{
+		mode = 0;
+		end = Final;
+		start = x;
+		dest = Final;
+	}
+	else
+	{
+		mode = 1;
+		end = -Final;
+		start = y;
+		dest = -Final;
+	}
 }
 
 void Enemy1::Move()
+{
+	if (mode == 0)
+	{
+		MoveType1();
+	}
+	else if (mode == 1)
+	{
+		MoveType2();
+	
+	}
+}
+
+void Enemy1::MoveType1() 
 {
 	if (prevMovement.x < 0 && coordAndSize.x <= dest)
 	{
@@ -48,11 +70,10 @@ void Enemy1::Move()
 		else
 			dest = start;
 	}
-	bool move = false;
+
 	if (lifeCount <= 0 && isLive)
 	{
 		isLive = false;
-		onGrnd = true;
 	}
 	else if (isLive)
 	{
@@ -75,7 +96,7 @@ void Enemy1::Move()
 	}
 	else
 	{
-		frameScale += 0.2;
+		frameScale += 0.3;
 		if (frameScale >= frameCount)
 			frameScale = 1;
 		drawInfo.currFrame = (int)frameScale;
@@ -87,7 +108,7 @@ void Enemy1::Move()
 		coordAndSize.y -= ySpeed;
 		prevMovement.y = -ySpeed;
 		onGrnd = false;
-		
+
 	}
 	else
 	{
@@ -95,11 +116,56 @@ void Enemy1::Move()
 		coordAndSize.y -= ySpeed;
 		prevMovement.y = -ySpeed;
 	}
-
-
 }
 
-void Enemy1::Interact(IDynamicObject* obj)
+void Enemy1::MoveType2() 
+{
+	if (prevMovement.y < 0 && coordAndSize.y <= dest)
+	{
+		if (dest == start)
+			dest = end;
+		else
+			dest = start;
+	}
+	else if (prevMovement.y > 0 && coordAndSize.y >= dest)
+	{
+		if (dest == start)
+			dest = end;
+		else
+			dest = start;
+	}
+
+	if (lifeCount <= 0 && isLive)
+	{
+		isLive = false;
+	}
+	else if (isLive)
+	{
+		frameScale += 0.3;
+		if (frameScale >= frameCount)
+			frameScale = 0;
+		drawInfo.currFrame = (int)frameScale;
+		if (coordAndSize.y <= dest)
+		{
+			coordAndSize.y += _speed;
+			prevMovement.y = _speed;
+			drawInfo.isInvert = true;
+		}
+		if (coordAndSize.y >= dest)
+		{
+			coordAndSize.y -= _speed;
+			prevMovement.y = -_speed;
+			drawInfo.isInvert = false;
+		}
+	}
+	else
+	{
+		coordAndSize.y += _speed;
+		prevMovement.y = _speed;
+	}
+}
+
+void Enemy1::Interact(Player* obj)
 {
 	if(!obj->IsImmune())
 		obj->Hit();
@@ -170,11 +236,6 @@ void Enemy1::SetOnGrnd()
 	onGrnd = true;
 }
 
-void Enemy1::SetCoins(int count)
-{
-}
-bool Enemy1::IsImmune() { return false; }
-void Enemy1::SetKey(int) {}
 Enemy1::~Enemy1()
 {
 }

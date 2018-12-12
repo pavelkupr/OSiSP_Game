@@ -1,7 +1,5 @@
 #include "Key.h"
 
-
-
 Key::Key(int x, int y, HBITMAP img, int frames, int mode)
 {
 	BITMAP bm;
@@ -20,7 +18,7 @@ Key::Key(int x, int y, HBITMAP img, int frames, int mode)
 	isVisible = true;
 	this->mode = mode;
 	ySpeed = 0;
-	frameScale = rand() % frames;
+	frameScale = 0;
 	lifeCount = 1;
 	frameCount = frames;
 }
@@ -62,7 +60,7 @@ void Key::Move()
 
 }
 
-void Key::Interact(IDynamicObject* object)
+void Key::Interact(Player* object)
 {
 	object->SetKey(1);
 	isVisible = false;
@@ -122,10 +120,6 @@ void Key::SetCoord(int x, int y)
 	coordAndSize.y = y;
 }
 
-void Key::SetCoins(int count)
-{
-}
-
 void Key::SetG(int value)
 {
 	g = value;
@@ -135,8 +129,7 @@ void Key::SetOnGrnd()
 {
 	onGrnd = true;
 }
-bool Key::IsImmune() { return false; }
-void Key::SetKey(int) {}
+
 Key::~Key()
 {
 }

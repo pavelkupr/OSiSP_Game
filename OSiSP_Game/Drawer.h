@@ -1,7 +1,7 @@
 #pragma once
-#include <windows.h>
+#include <Windows.h>
 #include "Map.h"
-#include "IDynamicObject.h"
+#include "NonPlayble.h"
 #include "Player.h"
 
 struct SpriteDrawInfo
@@ -19,16 +19,16 @@ struct MenuControl
 class Drawer
 {
 public:
-	Drawer(HWND hWND,PAINTSTRUCT ps);
+	Drawer(HWND hWND);
 	void SetDrawInfo(MapInfo mapInfo);
 	void SetPlayer(Player*);
-	void SetDynamicObjects(IDynamicObject**, int* count);
+	void SetNonPlaybleObjects(NonPlayble**, int* count);
 	void Paint();
 	int PaintMenu(MenuControl);
 	~Drawer();
 private:
 	Player* player;
-	IDynamicObject** dynamicobjects;
+	NonPlayble** nonPlaybleObjects;
 	HFONT hFont;
 	const int blockSize = 32,maxObj = 100;
 	int* currObjCount;

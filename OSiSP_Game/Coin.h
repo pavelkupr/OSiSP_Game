@@ -1,8 +1,9 @@
 #pragma once
-#include "IDynamicObject.h"
-#include "basswv.h"
+#include "NonPlayble.h"
+#include "Player.h"
+#include "bass.h"
 
-class Coin : public IDynamicObject
+class Coin : public NonPlayble
 {
 public:
 	Coin(int, int, HBITMAP, int,int,HSTREAM);
@@ -19,10 +20,7 @@ public:
 	void Hit() override;
 	bool IsLive() override;
 	bool IsVisible() override;
-	void Interact(IDynamicObject*) override;
-	void SetCoins(int) override;
-	void SetKey(int) override;
-	bool IsImmune() override;
+	void Interact(Player*) override;
 	~Coin();
 private:
 	int frameCount, g, ySpeed, xSpeed,lifeCount, mode, immuneCounter;

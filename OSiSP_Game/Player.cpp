@@ -205,8 +205,6 @@ void Player::Hit()
 		immuneCounter = 60;
 	}
 	BASS_ChannelPlay(hit, TRUE);
-	//PlaySound(L"hit.wav", NULL, SND_FILENAME | SND_ASYNC);
-	
 }
 
 void Player::SetKey(int count)
@@ -255,12 +253,6 @@ void Player::SetCoins(int count)
 	coinCount += count;
 }
 
-void Player::Interact(IDynamicObject*)
-{
-
-}
-void Player::Move()
-{}
 Player::~Player()
 {
 }

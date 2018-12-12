@@ -1,6 +1,5 @@
 #include "Map.h"
 
-
 Map::Map()
 {
 	mapInfo.iCount = 0;

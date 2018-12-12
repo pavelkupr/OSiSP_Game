@@ -1,5 +1,5 @@
 #pragma once
-#include "Windows.h"
+#include <Windows.h>
 
 struct PrevMovement
 {
@@ -33,14 +33,9 @@ public:
 	virtual void SetCoord(int, int) = 0;
 	virtual void SetYSpeed(int) = 0;
 	virtual void RespawnOrDispose() = 0;
-	virtual void Interact(IDynamicObject*) = 0;
 	virtual void Kill() = 0;
 	virtual void Hit() = 0;
-	virtual void Move() = 0;
-	virtual void SetCoins(int) = 0;
 	virtual bool IsLive() = 0;
-	virtual void SetKey(int) = 0;
 	virtual bool IsVisible() = 0;
-	virtual bool IsImmune() = 0;
 };
 
