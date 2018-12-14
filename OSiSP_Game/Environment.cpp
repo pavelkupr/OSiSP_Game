@@ -1,26 +1,27 @@
 #include "Environment.h"
 
-Environment::Environment(Drawer* drawer, Player* player, const char* map, int g)
+Environment::Environment(Drawer* drawer, const char* map, int g)
 {
 	this->g = g;
-	this->player = player;
 	this->map = new Map();
 	this->map->LoadMap(map);
 	this->mapInfo = this->map->GetMapInfo();
 	this->drawer = drawer;
+	player = new Player(64, 64, (HBITMAP)LoadImage(NULL, TEXT("player.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE), 5, 12, 8);
 	coinSound = BASS_StreamCreateFile(FALSE, TEXT("coin.wav"), 0, 0, 0);
 	firstMap = mapInfo;
 	drawer->SetPlayer(player);
 	player->SetG(g);
 	prevPlayerState = true;
+	currObjCount = 0;
+	simpleGround = new SimpleGround();
+	lava = new Lava();
+	records = new Records();
 	nonPlaybleObjects = (NonPlayble**)malloc(sizeof(NonPlayble**) * maxObj);
 	for (int i = 0; i < maxObj; i++)
 	{
 		nonPlaybleObjects[i] = 0;
 	}
-	currObjCount = 0;
-	simpleGround = new SimpleGround();
-	lava = new Lava();
 	drawer->SetDrawInfo(mapInfo);
 	drawer->SetNonPlaybleObjects(nonPlaybleObjects, &currObjCount);
 	ObjectCreation();
@@ -28,12 +29,35 @@ Environment::Environment(Drawer* drawer, Player* player, const char* map, int g)
 
 void Environment::NextMap()
 {
-	if (mapInfo.pathToNext != firstMap.pathToNext)
-		map->DeleteMapInfo(mapInfo);
-	player->SetCoord(64, 64);
-	map->LoadMap(mapInfo.pathToNext);
-	mapInfo = map->GetMapInfo();
-	SetMap(mapInfo);
+	char end[4] = "end";
+	bool endGame = false;
+	for(int i = 0; i <= 3; i++)
+	{
+		if (mapInfo.pathToNext[i] != end[i])
+			break;
+		if (i == 3)
+			endGame = true;
+			
+	}
+	if (endGame)
+	{
+		Record record;
+		record.coins = player->GetCoinCount();
+		record.name = player->name;
+		records->SetNewRecord(record);
+		player->RespawnOrDispose();
+		mapInfo = firstMap;
+		SetMap(mapInfo);
+	}
+	else
+	{
+		if (mapInfo.pathToNext != firstMap.pathToNext)
+			map->DeleteMapInfo(mapInfo);
+		player->SetCoord(64, 64);
+		map->LoadMap(mapInfo.pathToNext);
+		mapInfo = map->GetMapInfo();
+		SetMap(mapInfo);
+	}
 }
 
 void Environment::SetMap(MapInfo map)

@@ -11,10 +11,11 @@ void Map::LoadMap(const char* path)
 	FILE *file;
 	char* pathToSprites, *pathToObjs;
 	int pathLen,pathToBackLen;
+	DeleteMapInfo(mapInfo);
 	file = fopen(path, "r");
 	fscanf(file, "i: %d\n", &mapInfo.iCount);
 	fscanf(file, "j: %d\n", &mapInfo.jCount);
-	
+
 	//Проверка на некорректный файл
 	if (mapInfo.iCount <= 0 || mapInfo.jCount <= 0)
 	{
@@ -178,6 +179,12 @@ void Map::DeleteMapInfo(MapInfo mapInfo)
 		}
 		delete mapInfo.spritesInfo;
 
+		for (int x = 0; x < mapInfo.objsCount; x++)
+		{
+			delete mapInfo.objsInfo[x].pathToImg;
+		}
+		delete mapInfo.objsInfo;
+		delete mapInfo.pathToNext;
 		delete mapInfo.backgroundPath;
 	}
 }

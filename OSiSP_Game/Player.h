@@ -34,6 +34,7 @@ public:
 	void NextMap();
 	bool GetIsNext();
 	bool GetIsHit();
+	char name[10] = "Player";
 	~Player();
 private:
 	int frameCount, g, _speed, _jump, ySpeed, lifeCount,coinCount, immuneCounter,keyCount;

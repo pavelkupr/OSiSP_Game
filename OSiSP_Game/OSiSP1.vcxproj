@@ -29,6 +29,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="Records.cpp" />
     <ClCompile Include="SimpleGround.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -44,6 +45,7 @@
     <ClInclude Include="Map.h" />
     <ClInclude Include="NonPlayble.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="Records.h" />
     <ClInclude Include="SimpleGround.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

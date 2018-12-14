@@ -9,6 +9,7 @@
 #include "Key.h"
 #include "Door.h"
 #include "bass.h"
+#include "Records.h"
 
 struct UpdateCoords
 {
@@ -18,7 +19,7 @@ struct UpdateCoords
 class Environment
 {
 public:
-	Environment(Drawer*,Player*,const char*, int);
+	Environment(Drawer*,const char*, int);
 	void Cycle(Controls);
 	void SetNonPlaybleObject(NonPlayble*);
 	void SetMap(MapInfo);
@@ -30,6 +31,7 @@ private:
 	NonPlayble** nonPlaybleObjects;
 	Player* player;
 	Drawer* drawer;
+	Records* records;
 	Map* map;
 	MapInfo mapInfo,firstMap;
 	SimpleGround* simpleGround;

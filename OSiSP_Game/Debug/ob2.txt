@@ -1,6 +1,6 @@
-CountOfObjs: 3
+CountOfObjs: 4
 Code: C
-Coords length: 6
+Coords length: 18
 X: 8
 Y: 6
 X: 15
@@ -13,6 +13,30 @@ X: 36
 Y: 10
 X: 42
 Y: 10
+X: 1
+Y: 7
+X: 1
+Y: 8
+X: 2
+Y: 7
+X: 2
+Y: 8
+X: 57
+Y: 12
+X: 52
+Y: 13
+X: 1
+Y: 12
+X: 2
+Y: 12
+X: 3
+Y: 12
+X: 1
+Y: 14
+X: 2
+Y: 14
+X: 3
+Y: 14
 Frames: 10
 Mode: 0
 Path length: 8
@@ -33,3 +57,11 @@ Frames: 2
 Mode: 0
 Path length: 8
 Path: door.bmp
+Code: E
+Coords length: 1
+X: 29
+Y: 9
+Frames: 4
+Mode: -1
+Path length: 7
+Path: bat.bmp

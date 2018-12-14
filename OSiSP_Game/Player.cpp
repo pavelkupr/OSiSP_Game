@@ -255,4 +255,5 @@ void Player::SetCoins(int count)
 
 Player::~Player()
 {
+	DeleteObject(drawInfo.bitmap);
 }

@@ -3,6 +3,7 @@
 #include "Map.h"
 #include "NonPlayble.h"
 #include "Player.h"
+#include "Records.h"
 
 struct SpriteDrawInfo
 {
@@ -13,6 +14,7 @@ struct SpriteDrawInfo
 struct MenuControl
 {
 	bool isPressed=false;
+	char symbol = ' ';
 	int i=0, j=0;
 };
 
@@ -28,10 +30,12 @@ public:
 	~Drawer();
 private:
 	Player* player;
+	Records* record;
+	Record* records;
 	NonPlayble** nonPlaybleObjects;
 	HFONT hFont;
 	const int blockSize = 32,maxObj = 100;
-	int* currObjCount;
+	int* currObjCount, menuType,countOfRecords;
 	POINT wnd, map, camera;
 	HANDLE background,life,key,menu;
 	HWND hWND;

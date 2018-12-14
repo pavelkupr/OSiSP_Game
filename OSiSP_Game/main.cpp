@@ -13,7 +13,6 @@ bool isRunning = true,isMenu = true;
 const int ticksInMs = 1800, frameLim = 30;
 
 Drawer* drawer = NULL;
-HANDLE hbitmap;
 MapInfo mapInfo;
 MenuControl menuControl;
 
@@ -25,7 +24,6 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 	MSG msg;
 	RECT screen_rect;
 	HWND hWnd;
-	Player* player;
 	Environment* environment;
 	Controls controls;
 	LARGE_INTEGER time, currTime;
@@ -43,16 +41,12 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 	int posY = screen_rect.bottom / 2 - height / 2;
 
 	hWnd = CreateWindow(lpzClass, TEXT("Платформер"),
-		WS_SYSMENU, posX, posY, width, height, NULL, NULL,
+		WS_SYSMENU | WS_MINIMIZEBOX, posX, posY, width, height, NULL, NULL,
 		hInstance, NULL);
-	hbitmap = LoadImage(NULL, TEXT("player.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
-
 
 	drawer = new Drawer(hWnd);
 
-	player = new Player(64, 64,(HBITMAP)hbitmap,5,12,8);
-
-	environment = new Environment(drawer, player, "map1.txt",1);
+	environment = new Environment(drawer, "map1.txt",1);
 
 	ShowWindow(hWnd, nCmdShow);
 	UpdateWindow(hWnd);
@@ -74,14 +68,16 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 			else if (currTime.QuadPart - time.QuadPart > 1000/frameLim * ticksInMs)
 			{
 				QueryPerformanceCounter(&time);
-				if (GetKeyState(VK_UP) & 0x8000)
+				if (GetKeyState(VK_SPACE) & 0x8000 || GetKeyState(VK_UP) & 0x8000)
 					controls.up = true;
 				else
 					controls.up = false;
+
 				if (GetKeyState(VK_RIGHT) & 0x8000)
 					controls.right = true;
 				else
 					controls.right = false;
+
 				if (GetKeyState(VK_LEFT) & 0x8000)
 					controls.left = true;
 				else
@@ -93,7 +89,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
 			
 		}
 	}
-
+	
 	delete drawer;
 	return (int)msg.wParam;
 }
@@ -135,11 +131,13 @@ LRESULT CALLBACK WndProc(
 				PostQuitMessage(0);
 			}
 			menuControl.isPressed = false;
+			menuControl.symbol = ' ';
 		}
 		else
 			drawer->Paint();
 		break;
 	case WM_CHAR:
+		menuControl.symbol = wParam;
 		break;
 	case WM_KEYDOWN:
 		switch (wParam)

@@ -21,7 +21,7 @@ Path length: 7
 Path to sprites: sp1.txt
 Path length: 7
 Path to objs: ob2.txt
-Path length: 8
-Path to next: map1.txt
+Path length: 3
+Path to next: end
 Path length to background: 8
 Path to background: back.bmp

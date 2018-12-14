@@ -9,6 +9,7 @@ Drawer::Drawer(HWND hWND)
 	buffHDC = NULL;
 	mapTemplate = NULL;
 	invMap = NULL;
+	menuType = 0;
 	life = LoadImage(NULL, TEXT("life.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
 	key = LoadImage(NULL, TEXT("key1.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
 	menu = LoadImage(NULL, TEXT("menu.bmp"), IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE);
@@ -16,9 +17,9 @@ Drawer::Drawer(HWND hWND)
 		OUT_DEFAULT_PRECIS, CLIP_DEFAULT_PRECIS, DEFAULT_QUALITY, VARIABLE_PITCH, L"Monotype Corsiva");
 	menuHDC = CreateCompatibleDC(buffHDC);
 	SelectObject(menuHDC, menu);
-	SelectObject(menuHDC, menuFont);
-	SetBkMode(menuHDC, TRANSPARENT);
 	this->hWND = hWND;
+	record = new Records();
+	records = 0;
 }
  
 void Drawer::SetDrawInfo(MapInfo mapInfo)
@@ -176,24 +177,93 @@ void Drawer::CreateMapTemplate(MapInfo mapInfo)
 
 int Drawer::PaintMenu(MenuControl control)
 {
-	SetTextColor(menuHDC, 0x00FFFFFF);
-	if ((control.i >= wnd.x / 2 - 16 * 4 && control.i <= wnd.x / 2 + 16 * 4) && (control.j >= 110 && control.j <= 150))
+	HDC tempHDC;
+	HBITMAP temp;
+	tempHDC = CreateCompatibleDC(buffHDC);
+	temp = CreateCompatibleBitmap(buffHDC, wnd.x, wnd.y);
+	SelectObject(tempHDC, temp);
+	BitBlt(tempHDC,0,0,wnd.x,wnd.y,menuHDC,0,0, SRCCOPY);
+	SelectObject(tempHDC, menuFont);
+	SetBkMode(tempHDC, TRANSPARENT);
+	if (menuType == 0)
 	{
-		if (control.isPressed)
-			return 1;
-		SetTextColor(menuHDC, 0x000000FF);
+		if (control.symbol != ' ')
+		{
+			if ((strlen(player->name) != 0) && (control.symbol == '\b'))
+				player->name[strlen(player->name) - 1] = '\0';
+			else if ((strlen(player->name) < 9) && (control.symbol != '\b') && (control.symbol != '\r') && (control.symbol != '\t') && (control.symbol != '\x1b'))
+			{
+				player->name[strlen(player->name) + 1] = '\0';
+				player->name[strlen(player->name)] = control.symbol;
+			}
+		}
+		SetTextColor(tempHDC, 0x00FFFFFF);
+		TextOut(tempHDC, 40, wnd.y-50, CA2W("Name:"), 5);
+
+		TextOut(tempHDC, 150, wnd.y - 50, CA2W(player->name), strlen(player->name));
+		if ((control.i >= 40 && control.i <= 40 + 16 * 4) && (control.j >= 50 && control.j <= 90))
+		{
+			if (control.isPressed)
+				return 1;
+			SetTextColor(tempHDC, 0x000000FF);
+		}
+		TextOut(tempHDC, 40, 50, CA2W("Play"), 4);
+		SetTextColor(tempHDC, 0x00FFFFFF);
+		if ((control.i >= 40 && control.i <= 40 + 16 * 7) && (control.j >= 110 && control.j <= 150))
+		{
+			if (control.isPressed)
+			{
+				if (records != NULL)
+					record->Delete(records, countOfRecords);
+				records = record->GetRecords(&countOfRecords);
+				menuType = 1;
+			}
+			SetTextColor(tempHDC, 0x000000FF);
+		}
+		TextOut(tempHDC, 40, 110, CA2W("Records"), 7);
+		SetTextColor(tempHDC, 0x00FFFFFF);
+		if ((control.i >= 40 && control.i <= 40 + 16 * 4) && (control.j >= 170 && control.j <= 210))
+		{
+			if (control.isPressed)
+				return 2;
+			SetTextColor(tempHDC, 0x000000FF);
+		}
+		TextOut(tempHDC, 40, 170, CA2W("Exit"), 4);
 	}
-	TextOut(menuHDC, wnd.x/2-16*2, 110, CA2W("PLAY"), 4);
-	SetTextColor(menuHDC, 0x00FFFFFF);
-	if ((control.i >= wnd.x / 2 - 16 * 4 && control.i <= wnd.x / 2 + 16 * 4) && (control.j >= 170 && control.j <= 210))
+	else if (menuType == 1)
 	{
-		if (control.isPressed)
-			return 2;
-		SetTextColor(menuHDC, 0x000000FF);
+		SetTextColor(tempHDC, 0x00FFFFFF);
+		for (int i = 0; i <= countOfRecords && i <= 10; i++)
+		{
+			if (i < countOfRecords && i <= 10)
+			{
+				char curr[3];
+				int count = records[i].coins;
+				curr[0] = 48 + count / 100;
+				count -= (count / 100) * 100;
+				curr[1] = 48 + count / 10;
+				count -= (count / 10) * 10;
+				curr[2] = 48 + count;
+				TextOut(tempHDC, 40, 40 * i + 50, CA2W(records[i].name), strlen(records[i].name));
+				TextOut(tempHDC, 260, 40 * i + 50, CA2W(curr), 3);
+			}
+			else
+			{
+				if ((control.i >= 40 && control.i <= 40 + 16 * 4) && (control.j >= 40 * i + 50 && control.j <= 40 * i + 90))
+				{
+					if (control.isPressed)
+						menuType = 0;
+					SetTextColor(tempHDC, 0x000000FF);
+				}
+				TextOut(tempHDC, 40, 40 * i + 50, CA2W("Back"), 4);
+				break;
+			}
+		}
 	}
-	TextOut(menuHDC, wnd.x/2-16*2, 170, CA2W("EXIT"), 4);
-	BitBlt(buffHDC, 0, 0, wnd.x, wnd.y, menuHDC, 0, 0, SRCCOPY);
+	BitBlt(buffHDC, 0, 0, wnd.x, wnd.y, tempHDC, 0, 0, SRCCOPY);
 	DrawFromBuff();
+	DeleteDC(tempHDC);
+	DeleteObject(temp);
 	return 0;
 }
 
